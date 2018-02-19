@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<link rel="stylesheet" href="/main.css">
+</head>
+<body>
+
+
+	<main id="application">
+
+		<section id="menu">
+
+			<h1>Меню</h1>
+
+			<h2 class="js-subheader">Загрузка данных...</h2>
+
+			<ul>
+				<li><a href="#" data-section="profile">Профиль пользователя</a></li>
+				<li><a href="#" data-section="signup">Регистрация</a></li>
+				<li><a href="#" data-section="signin">Авторизация</a></li>
+				<li><a href="#" data-section="scoreboard">Таблица лидеров</a></li>
+				<li><a href="#" data-section="game">Играть</a></li>
+			</ul>
+
+		</section>
+
+
+		<section id="signup">
+
+			<h1>Зарегистрируйтесь</h1>
+
+			<form class="js-signup-form">
+				<input required type="email" name="email" id="email" placeholder="Введите ваш email">
+				<input required type="number" name="age" id="age" placeholder="Ваш возраст">
+				<input required type="password" name="password" id="password" placeholder="Ваш пароль">
+				<input required type="password" name="password_repeat" id="password_repeat" placeholder="Повторите пароль">
+				<input class="js-signup-submit" type="submit">
+			</form>
+
+			<a href="#" data-section="menu">В меню</a>
+
+		</section>
+
+
+		<section id="signin">
+
+			<h1>Войдите на сайт</h1>
+			<p id = "alert" ></p>
+			<form class="js-signin-form">
+				<input required type="email" name="email" id="email1" placeholder="Введите ваш email">
+				<input required type="password" name="password" id="password1" placeholder="Ваш пароль">
+				<input required class="js-signin-submit" type="submit">
+			</form>
+
+			<a href="#" data-section="menu">В меню</a>
+
+		</section>
+
+		<section id="scoreboard">
+
+			<h1>Таблица лидеров</h1>
+
+			<div class="js-scoreboard-table">
+
+			</div>
+
+			<a href="#" data-section="menu">В меню</a>
+
+		</section>
+
+		<section id="profile">
+			<h1> Добро пожаловать! </h1>
+			<a href="#" data-section="menu">В меню</a>
+			<div class="js-profile-info">Загрузка данных...</div>
+		</section>
+		<section id="game">
+			<a href="#" data-section="menu">В меню</a>
+			<div><canvas id="gc" width="640" height = "460"></canvas></div>
+				<script>
+					p1y = p2y = 40;
+					pt = 14;
+					ph = 100;
+					bx = by = 50;
+					bd = 6;
+					xv = yv = 5;
+					ais = 2;
+					score1 = score2 = 0;
+					window.onload = function(){
+						c = document.getElementById('gc');
+						cc = c.getContext('2d');
+						setInterval(update, 1000/30);
+						c.addEventListener('mousemove', function(e){
+							p1y = e.clientY - ph/2;
+						});
+					}
+					function reset(){
+						bx = c.width/2;
+						by = c.height/2;
+						xv = -xv;
+						yv = 3;
+					}
+					function update(){
+						bx+=xv;
+						by+=yv;
+						if ( by < 0 && yv < 0){
+							yv = -yv;
+						}
+						if ( by > c.height && yv > 0){
+							yv = -yv;
+						}
+						if (bx  < 0 + pt) {
+							if (by > p1y && by < p1y + ph){
+								xv=-xv;
+								dy=by - (p1y + ph/2);
+								yv = dy*0.3;
+							} else {
+								score2++;
+								reset();
+							}
+						}
+						if (bx > c.width - pt) {
+							if (by > p2y && by < p2y + ph){
+								xv=-xv;
+								dy=by - (p2y + ph/2);
+								yv = dy*0.3;
+							} else {
+								score1++;
+								reset();
+							}
+						}
+						if ( p2y + ph/2 < by){
+							p2y += ais;
+						} else {
+							p2y -= ais; 
+						}
+						//cc.fillStyle = 'black';
+						var img = new Image();
+				        img.src = "fon.jpg";
+				        var pattern = cc.createPattern(img, "repeat");
+				        cc.fillStyle = pattern;
+						cc.fillRect(0,0, c.width, c.height);
+						cc.fillStyle = 'red';
+						cc.fillRect(0, p1y, pt, ph);
+						cc.fillStyle = 'green';
+						cc.fillRect( c.width - pt, p2y, pt, ph);
+						cc.fillStyle = 'white';
+						cc.fillRect(bx - bd/2 ,by - bd/2, bd, bd );
+						cc.font = '28px serif';
+						cc.fillText( "red score " + score1, 100, 100);
+						cc.fillText( "green score " + score2, c.width - 220, 100);
+					}
+				</script>
+		</section>
+
+
+	</main>
+
+
+
+
+
+<script src="/script.js"></script>
+</body>
+</html>
