@@ -16,14 +16,15 @@
 
 			<h1>Меню</h1>
 
-			<h2 class="js-subheader">Загрузка данных...</h2>
+			<h2 class="js-subheader onlyauth" >Загрузка данных...</h2>
 
 			<ul>
-				<li><a href="#" data-section="profile">Профиль пользователя</a></li>
-				<li><a href="#" data-section="signup">Регистрация</a></li>
-				<li><a href="#" data-section="signin">Авторизация</a></li>
+				<li class = "onlyauth"><a href="#" data-section="profile">Профиль пользователя</a></li>
+				<li class = "onlyunauth"><a href="#"  data-section="signup">Регистрация</a></li>
+				<li class = "onlyunauth"><a href="#"  data-section="signin">Авторизация</a></li>
 				<li><a href="#" data-section="scoreboard">Таблица лидеров</a></li>
-				<li><a href="#" data-section="game">Играть</a></li>
+				<li class = "onlyauth" ><a href="#" data-section="game">Играть</a></li>
+				<li class = "onlyauth"><a href="#" id = "exit"> Выйти </a></li>
 			</ul>
 
 		</section>
@@ -76,6 +77,7 @@
 			<h1> Добро пожаловать! </h1>
 			<a href="#" data-section="menu">В меню</a>
 			<div class="js-profile-info">Загрузка данных...</div>
+			<a href="#" data-section="profileEdit" class = "onlyauth" style = "font-size: 16px">Изменить данные профиля</a>
 		</section>
 		<section id="game">
 			<a href="#" data-section="menu">В меню</a>
@@ -155,7 +157,24 @@
 					}
 				</script>
 		</section>
+		<section id="profileEdit">
 
+			<h3>Изменить данные</h3>
+
+			<form class="js-editprofile-form">
+				<input type="email" name="email" id="email2" placeholder="Введите ваш email">
+				<input type="number" name="age" id="age2" placeholder="Ваш возраст">
+				<input class="js-editprofile-submit" type="submit">
+			</form>
+			<form action="/upload" enctype="multipart/form-data" method="post">
+			    <input type="file" name="upload" multiple>
+			    <input type="submit" value="Upload">
+			</form>
+
+			<a href="#" data-section="profile">В профиль</a><br/>
+			<a href="#" data-section="menu">В меню</a>
+
+		</section>
 
 	</main>
 

@@ -7,6 +7,8 @@ const cookie = require('cookie-parser');
 const morgan = require('morgan');
 const debug = require('debug');
 const uuid = require('uuid/v4');
+const formidable = require('formidable');
+const fs = require('fs');
 
 const logger = debug('mylogger');
 logger('Starting app');
@@ -19,7 +21,7 @@ app.use(body.json());
 app.use(cookie());
 
 
-const users = {
+let users = {
 	'a.ostapenko@corp.mail.ru': {
 		email: 'a.ostapenko@corp.mail.ru',
 		password: 'password',
@@ -90,6 +92,69 @@ app.post('/signup', function (req, res) {
 	res.status(201).json({id});
 });
 
+
+app.post('/editprofile', function (req, res) {
+	const email = req.body.email;
+	const age = +req.body.age;
+	const id = req.cookies['frontend'];
+	
+	const currentEmail = ids[id];
+	console.log(currentEmail);
+
+	if (!email && !age ) {
+		return res.status(400).json({error: 'Вы ничего не ввели!'});
+	}
+
+	if (users[email] && currentEmail != email) {
+		return res.status(400).json({error: 'Почта уже была зарегистрирована!'});
+	}
+	if (age){
+		users[currentEmail].age = age;
+	} 
+	if (email){
+		users[currentEmail].email = email;
+		ids[id] = email;
+	} 
+	res.status(201).json({id});
+});
+
+app.post('/upload', function (req, res) {
+	/*
+	let length = 0;
+	req.on('data', function(chunk) {
+      // ничего не делаем с приходящими данными, просто считываем
+      length += chunk.length;
+      if (length > 50 * 1024 * 1024) {
+        res.statusCode = 413;
+        res.end("File too big");
+      }
+    }).on('end', function() {
+      res.end('ok');
+    });
+    */
+    const id = req.cookies['frontend'];
+    const email = ids[id];
+
+    const form = new formidable.IncomingForm();
+
+    form.parse(req);
+    
+    form.on('fileBegin', function (name, file){
+        file.path = __dirname + '/uploads/' + id + '-' + file.name;
+        if (users[email] != null){
+        	users[email].avatar = '' + id + '-' + file.name;
+    	}
+    });
+
+    form.on('file', function (name, file){
+        console.log('Uploaded ' + file.name);
+    });
+
+    //res.sendFile(__dirname + '/index.html');
+    res.end();
+});
+
+
 app.post('/login', function (req, res) {
 	const password = req.body.password;
 	const email = req.body.email;
@@ -105,6 +170,12 @@ app.post('/login', function (req, res) {
 
 	res.cookie('frontend', id, {expires: new Date(Date.now() + 1000 * 60 * 10)});
 	res.status(201).json({id});
+});
+
+app.post('/unlogin', function (req, res) {
+
+	res.cookie('frontend', req.cookies['frontend'], {expires: new Date(Date.now())});
+	res.end();
 });
 
 app.get('/me', function (req, res) {
